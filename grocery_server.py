@@ -47,17 +47,10 @@ def recieve(connection):
             for word in line.split():
                 # flag = -1
                 #for word in line.split():
-                if s == word:
-                    flag = 1
-                    for i in d.keys():
-                        if s==i:
-                            connection.sendall(true)
-                            amount=amount+d[i]
-                            l.append(amount)
-                            #r=open("prices.txt",'w')
-                            #r.write(str(amount))
-
-                            
+                if s.lower() == word:
+                    flag =1
+                    connection.sendall(true)
+                                        
                 else:
                     continue
         if(flag != 1):
@@ -65,24 +58,24 @@ def recieve(connection):
             print_lock.release()          
         data = connection.recv(1024)
         cand = str(data, 'utf-8')
-        if cand =="YES":
-            connection.sendall(true)
-            # print_lock.release()
-        else:
-            connection.sendall(false)
-            r=open("prices.txt",'w')
-            for i in l:
-                r.write(str(i))
-                r.write("\n")
-            r.close()
-            # print_lock.release()
-            break
-        data = connection.recv(1024)
-        final = str(data, 'utf-8')
-        if final == "exit":
-            print_lock.release()
-            break
-        
+        uppercand = cand.upper()
+            if (uppercand == "YES" or uppercand =='Y'):
+                  connection.sendall(true)
+            else:
+                  connection.sendall(false)
+                  r = open("prices.txt", 'w')
+                  for i in l:
+                        r.write(str(i))
+                        r.write("\n")
+                  r.close()
+                  break
+
+
+            data = connection.recv(1024)
+            final = str(data, 'utf-8')
+            if final == "exit":
+                  print_lock.release()
+                  break
 
 def close(s, data):
     print("Closing current connections")
@@ -94,11 +87,3 @@ def close(s, data):
 con()
 client_con()
 sock.close()
-#d = {'1':('tomato',20),'2':('potato',10),'3':('onion',40),'4':('carrot',10),'5':('apple',45)}
-
-
-
-
-#def threaded(c):
-#      amount = 0
-#      while True:
